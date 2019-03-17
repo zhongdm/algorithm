@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Binary Tree</title>
+</head>
+<body>
+	<canvas id="canvas" width="1000" height="1000"></canvas>
+</body>
+<script>
+	function BinaryTree() {
+		var Constant = {
+			r: 30, // 节点圆的半径
+			lineLen: 50, // 矢量箭头的长度
+			arrowSideLen: 10, // 矢量箭头部分的箭头边长
+			angle: 30 // 倾斜角度
+		}
+		// 构造函数
+		var Node = function(key) {
+			this.key = key
+			this.left = null
+			this.right = null
+			this.level = 0
+		}
+
+		// 定义根节点
+		var root = null
+		var parentPos = -1
+
+		this.insert = function(key){
+			var newNode = new Node(key)
+
+			if(root == null ){
+				root = newNode
+				draw(key)
+			}
+			else {
+				insertNode(root, newNode)
+			}
+		}
+
+		function insertNode(root, newNode) {
+			if(root.key > newNode.key) {
+				if(!root.left) { // 没有左节点
+					root.left = newNode
+					root.left.level = root.level + 1
+					draw(root.left.key,0,parentPos, root.left.level)
+				}
+				else {
+					parentPos = 0
+					insertNode(root.left, newNode)
+				}
+			}
+			else {
+				if(!root.right) {
+					root.right = newNode
+					root.right.level = root.level + 1
+					draw(root.right.key, 1,parentPos, root.right.level)
+				}
+				else {
+					parentPos = 1
+					insertNode(root.right, newNode)
+				}
+			}
+		}
+
+		var draw = function(key, nodePos, parentPos,level = 0) {
+			// nodePos: 0--left, 1--right
+			var canvas = document.getElementById('canvas')
+			var cxt = canvas.getContext("2d")
+			
+			drawNode(cxt, key, level, nodePos, parentPos)
+		}
+		// draw()
+		function drawNode(cxt, key, level, nodePos, parentPos) {
+			var r = Constant.r // 圆的半径
+			var lineLen = Constant.lineLen // 矢量箭头的长度
+
+			var angle = nodePos == 0 
+				? - Constant.angle 
+				: Constant.angle
+			// 两个节点的圆心之间的x位移
+			var _x = caculate(lineLen+2 * r, angle).movex 
+			// 两个节点的圆心之间的y位移
+			var _y = caculate(lineLen+2 * r, Math.abs(angle)).movey 
+
+			var prx = parentPos == 1 ? Math.abs(_x) : -Math.abs(_x)
+			var pry = parentPos == 1 ? Math.abs(_y) : _y
+			// 父节点圆心的坐标
+			var startPoint = {
+				x: 500,
+				y: 60
+			}
+			var parentX = startPoint.x + (level - 1) * prx
+			var parentY = startPoint.y + (level - 1) * pry
+
+			// 当前节点圆心坐标
+			var parentY = startPoint.y + (level - 1) * pry
+			var x = parentPos !== undefined ? parentX + _x : startPoint.x
+			var y = parentPos !== undefined ? parentY + _y : startPoint.y
+
+			if(nodePos !== undefined) {
+				// 绘制矢量箭头
+				// 直线
+				var _ay = Constant.arrowSideLen // 矢量箭头部分箭头的边长
+
+				cxt.beginPath()
+				drawArrowLine(cxt, parentX, parentY, r, lineLen, angle, nodePos)
+				cxt.stroke() // stroke直线
+				cxt.fill() // fill箭头
+				cxt.closePath()
+			}
+
+			// 绘制圆
+			cxt.beginPath()
+			cxt.arc(x, y, r, 0, 2*Math.PI)
+			cxt.stroke()
+			cxt.closePath()
+
+			// 填充文本
+			cxt.beginPath()
+			cxt.strokeText(key, x-5, y + 2)
+			cxt.closePath()
+
+
+		}
+		/** 两个节点圆心相差的x和y坐标位移 */
+		function caculate(len, angle) {
+			var radian = angle * Math.PI / 180
+
+			return {
+				movex: Math.sin(radian) * len,
+				movey: Math.cos(radian) * len
+			}
+		}
+
+		/**
+		  * 绘制带有箭头的直线
+		  * @param cxt : 绘图上下文
+		  * @param parentX : 父节点的圆心横坐标
+		  * @param parentY : 父节点的圆心纵坐标
+		  * @param r       : 节点的圆的半径
+		  * @param lineLen : 父子节点之间连接线的长度，不包括自身圆的半径
+		  * @param angle   : 父子节点之间连接线的倾斜角度
+		  * @param nodePos : 0 -- 左节点， 1 -- 右节点
+		  * @param hasArrow: 父子节点之间的连接线是否带有向箭头，默认为true
+		 */
+		function drawArrowLine(cxt, parentX, parentY, r, lineLen, angle, nodePos, hasArrow = true) {
+			var lineStart = caculate(r, angle),
+				lineEnd = caculate(r + lineLen, angle),
+				_ay = Constant.arrowSideLen,
+				arrowPoint2 = caculate(_ay,
+					(nodePos == 0 ? '': '-')+(90 - Math.abs(angle)))
+
+			cxt.moveTo(parentX + lineStart.movex, parentY + lineStart.movey)
+			cxt.lineTo(parentX + lineEnd.movex, parentY + lineEnd.movey)
+
+			if(hasArrow) {
+				cxt.lineTo(parentX + lineEnd.movex, parentY + lineEnd.movey - _ay)
+				cxt.lineTo(parentX + lineEnd.movex + arrowPoint2.movex, 
+					parentY + lineEnd.movey- arrowPoint2.movey)
+				cxt.lineTo(parentX + lineEnd.movex, parentY + lineEnd.movey)
+			}
+			
+		}
+
+	}
+	var nodes = [8, 3, 10, 1 ,2 ,14 ,31 , 20, 12]
+	// var nodes = [8, 3, 10, 2, 1, 14, 21, 13]
+	var binaryTree = new BinaryTree()
+	nodes.forEach(function(key){
+		binaryTree.insert(key)
+	})
+	
+</script>
+</html>
