@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>队列</title>
+</head>
+<body>
+  <pre>
+    let queue = [1, 2, 3, 4, 5]
+queue.push(6)
+  </pre>
+  <div id="result"></div>
+</body>
+<script>
+let queue = [1, 2, 3, 4, 5]
+console.log('queue add before: ', queue)
+queue.push(6)
+console.log('queue add after: ', queue)
+queue.unshift()
+console.log('queue delete after: ', queue)
+document.getElementById('result').innerHTML = 'queue: ' + queue
+</script>
+</html>
