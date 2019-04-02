@@ -1,0 +1,25 @@
+{
+  "name": "algorithm",
+  "version": "1.0.0",
+  "description": "+ 二叉树\r + 链表\r ###  算法\r + 快速排序\r +",
+  "main": "Queue.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhongdm/algorithm.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zhongdm/algorithm/issues"
+  },
+  "homepage": "https://github.com/zhongdm/algorithm#readme",
+  "directories": {
+    "example": "example"
+  },
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
