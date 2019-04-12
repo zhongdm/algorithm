@@ -4,7 +4,8 @@
   "description": "+ 二叉树\r + 链表\r ###  算法\r + 快速排序\r +",
   "main": "Queue.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node App.js"
   },
   "repository": {
     "type": "git",
